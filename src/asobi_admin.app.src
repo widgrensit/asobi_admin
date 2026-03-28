@@ -1,0 +1,19 @@
+{application, asobi_admin, [
+    {description, "Admin dashboard for Asobi game backend"},
+    {vsn, git},
+    {registered, []},
+    {mod, {asobi_admin_app, []}},
+    {included_applications, []},
+    {applications, [
+        kernel,
+        stdlib,
+        nova,
+        arizona_core,
+        arizona_nova,
+        asobi
+    ]},
+    {env, []},
+    {modules, []},
+    {licenses, ["Apache-2.0"]},
+    {links, [{"GitHub", "https://github.com/widgrensit/asobi_admin"}]}
+]}.

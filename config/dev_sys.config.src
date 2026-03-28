@@ -1,0 +1,34 @@
+[
+    {kernel, [
+        {logger_level, debug},
+        {logger, [
+            {handler, default, logger_std_h, #{
+                formatter => {nova_jsonlogger, #{
+                    map_depth => 3,
+                    term_depth => 50
+                }}
+            }}
+        ]}
+    ]},
+    {nova, [
+        {use_stacktrace, true},
+        {environment, dev},
+        {cowboy_configuration, #{
+            port => 8083
+        }},
+        {dev_mode, true},
+        {bootstrap_application, asobi_admin},
+        {json_lib, json}
+    ]},
+    {asobi, [
+        {asobi_repo, #{
+            database => <<"asobi_dev">>,
+            hostname => <<"localhost">>,
+            port => 5432,
+            username => <<"postgres">>,
+            password => <<"postgres">>,
+            pool_size => 5
+        }}
+    ]},
+    {pg, [{scope, [nova_scope, arizona_pubsub, asobi_presence, asobi_chat]}]}
+].
