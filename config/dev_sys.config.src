@@ -29,6 +29,5 @@
             password => <<"postgres">>,
             pool_size => 5
         }}
-    ]},
-    {pg, [{scope, [nova_scope, arizona_pubsub, asobi_presence, asobi_chat]}]}
+    ]}
 ].
