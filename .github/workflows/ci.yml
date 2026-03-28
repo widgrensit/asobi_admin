@@ -6,14 +6,12 @@ on:
   pull_request:
     branches: [main]
 
-permissions:
-  contents: read
-  pull-requests: write
-
 jobs:
   ci:
-    name: Erlang CI
     uses: Taure/erlang-ci/.github/workflows/ci.yml@main
+    permissions:
+      contents: write
+      pull-requests: write
     with:
       version-file: '.tool-versions'
       enable-audit: true
@@ -21,3 +19,4 @@ jobs:
       enable-sbom-scan: true
       enable-dependency-submission: true
       enable-summary: true
+    secrets: inherit
