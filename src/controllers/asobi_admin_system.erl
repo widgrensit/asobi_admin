@@ -29,6 +29,11 @@ index(_Req) ->
         },
         uptime_ms => element(1, erlang:statistics(wall_clock)),
         run_queue => erlang:statistics(run_queue),
+        %% These figures describe the node the console runs on. When
+        %% standalone, that is not the game backend node - see
+        %% asobi_admin_runtime.
+        deployment_mode => atom_to_binary(asobi_admin_runtime:mode()),
+        live_plane_authoritative => asobi_admin_runtime:live_plane_authoritative(),
         applications => [atom_to_binary(App) || {App, _, _} <- application:which_applications()]
     }}.
 
