@@ -13,7 +13,7 @@ routes(_Environment) ->
 admin_api_routes() ->
     #{
         prefix => ~"/admin/api",
-        security => false,
+        security => fun asobi_admin_auth:verify/1,
         plugins => [
             {pre_request, nova_request_plugin, #{
                 decode_json_body => true,
@@ -70,6 +70,8 @@ admin_api_routes() ->
         ]
     }.
 
+%% Route security is not applied to ws upgrades; the dashboard socket
+%% authenticates in-protocol (first frame) instead - see its moduledoc.
 admin_ws_routes() ->
     #{
         prefix => ~"/admin",

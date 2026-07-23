@@ -8,8 +8,6 @@
         kernel,
         stdlib,
         nova,
-        arizona_core,
-        arizona_nova,
         asobi
     ]},
     {env, []},

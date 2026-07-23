@@ -1,4 +1,4 @@
 -sname asobi_admin
--setcookie asobi_cookie
+-setcookie ${RELEASE_COOKIE}
 +K true
 +A 30
