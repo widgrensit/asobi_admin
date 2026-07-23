@@ -20,6 +20,9 @@
         {bootstrap_application, asobi_admin},
         {json_lib, json}
     ]},
+    {asobi_admin, [
+        {admin_token, <<"${ASOBI_ADMIN_TOKEN}">>}
+    ]},
     {asobi, [
         {asobi_repo, #{
             database => <<"asobi_dev">>,
