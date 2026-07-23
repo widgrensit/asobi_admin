@@ -8,6 +8,11 @@ index(_Req) ->
     {json, #{
         status => ~"ok",
         online_players => asobi_presence:online_count(),
+        %% online_players is in-memory node state; false here means the
+        %% console is not co-located with the backend, so the count is not
+        %% authoritative (see asobi_admin_runtime).
+        live_plane_authoritative => asobi_admin_runtime:live_plane_authoritative(),
+        deployment_mode => atom_to_binary(asobi_admin_runtime:mode()),
         node => atom_to_binary(node()),
         memory => #{
             total => proplists:get_value(total, Memory),

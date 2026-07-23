@@ -21,7 +21,8 @@
         {json_lib, json}
     ]},
     {asobi_admin, [
-        {admin_token, <<"${ASOBI_ADMIN_TOKEN}">>}
+        {admin_token, <<"${ASOBI_ADMIN_TOKEN}">>},
+        {deployment_mode, <<"${ASOBI_ADMIN_DEPLOYMENT_MODE}">>}
     ]},
     {asobi, [
         {asobi_repo, #{
