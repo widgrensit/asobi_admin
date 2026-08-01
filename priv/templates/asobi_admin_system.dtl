@@ -1,0 +1,30 @@
+{% extends "base.dtl" %}
+{% block title %}asobi_admin - System{% endblock %}
+{% block content %}
+<h1>System</h1>
+
+{% if not stats.live_plane_authoritative %}
+<div class="banner banner-warn">
+  Running in <strong>{{ stats.deployment_mode }}</strong> mode: these figures describe this
+  console's own node, not the game backend node.
+</div>
+{% endif %}
+
+<div class="panel">
+  <table>
+    <tr><th>Node</th><td>{{ stats.node }}</td></tr>
+    <tr><th>OTP release</th><td>{{ stats.otp_release }} ({{ stats.erts_version }})</td></tr>
+    <tr><th>Schedulers</th><td>{{ stats.schedulers_online }} / {{ stats.schedulers }}</td></tr>
+    <tr><th>Processes</th><td>{{ stats.process_count }} / {{ stats.process_limit }}</td></tr>
+    <tr><th>Ports</th><td>{{ stats.port_count }} / {{ stats.port_limit }}</td></tr>
+    <tr><th>Atoms</th><td>{{ stats.atom_count }} / {{ stats.atom_limit }}</td></tr>
+    <tr><th>ETS tables</th><td>{{ stats.ets_count }}</td></tr>
+    <tr><th>Run queue</th><td>{{ stats.run_queue }}</td></tr>
+    <tr><th>Uptime (ms)</th><td>{{ stats.uptime_ms }}</td></tr>
+    <tr><th>Memory total</th><td>{{ stats.memory.total }}</td></tr>
+    <tr><th>Memory processes</th><td>{{ stats.memory.processes }}</td></tr>
+    <tr><th>Memory ETS</th><td>{{ stats.memory.ets }}</td></tr>
+    <tr><th>Memory binary</th><td>{{ stats.memory.binary }}</td></tr>
+  </table>
+</div>
+{% endblock %}

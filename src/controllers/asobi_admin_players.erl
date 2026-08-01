@@ -1,6 +1,7 @@
 -module(asobi_admin_players).
 
 -export([index/1, show/1, search/1, ban/1, unban/1, grant_currency/1]).
+-export([do_ban/1, do_unban/1, do_grant/3]).
 
 -spec index(cowboy_req:req()) -> {json, map()}.
 index(#{qs := Qs} = _Req) ->
@@ -56,35 +57,51 @@ search(#{qs := Qs} = _Req) ->
 
 -spec ban(cowboy_req:req()) -> {json, map()} | {status, integer()}.
 ban(#{bindings := #{~"id" := PlayerId}} = _Req) ->
-    case asobi_repo:get(asobi_player, PlayerId) of
-        {ok, Player} ->
-            CS = kura_changeset:cast(
-                asobi_player, Player, #{banned_at => calendar:universal_time()}, [banned_at]
-            ),
-            {ok, Updated} = asobi_repo:update(CS),
-            {json, #{player => Updated, action => ~"banned"}};
-        {error, not_found} ->
-            {status, 404}
+    case do_ban(PlayerId) of
+        {ok, Updated} -> {json, #{player => Updated, action => ~"banned"}};
+        {error, not_found} -> {status, 404}
     end.
 
 -spec unban(cowboy_req:req()) -> {json, map()} | {status, integer()}.
 unban(#{bindings := #{~"id" := PlayerId}} = _Req) ->
-    case asobi_repo:get(asobi_player, PlayerId) of
-        {ok, Player} ->
-            CS = kura_changeset:cast(asobi_player, Player, #{banned_at => undefined}, [banned_at]),
-            {ok, Updated} = asobi_repo:update(CS),
-            {json, #{player => Updated, action => ~"unbanned"}};
-        {error, not_found} ->
-            {status, 404}
+    case do_unban(PlayerId) of
+        {ok, Updated} -> {json, #{player => Updated, action => ~"unbanned"}};
+        {error, not_found} -> {status, 404}
     end.
 
 -spec grant_currency(cowboy_req:req()) -> {json, map()} | {status, integer()}.
 grant_currency(#{bindings := #{~"id" := PlayerId}, json := Params} = _Req) ->
     Currency = maps:get(~"currency", Params, ~"gold"),
     Amount = maps:get(~"amount", Params),
-    case asobi_economy:grant(PlayerId, Currency, Amount, #{reason => ~"admin_grant"}) of
+    case do_grant(PlayerId, Currency, Amount) of
         {ok, Wallet} ->
             {json, #{success => true, wallet => Wallet}};
         {error, Reason} ->
             {json, 400, #{}, #{error => Reason}}
     end.
+
+-spec do_ban(binary()) -> {ok, map()} | {error, not_found}.
+do_ban(PlayerId) ->
+    case asobi_repo:get(asobi_player, PlayerId) of
+        {ok, Player} ->
+            CS = kura_changeset:cast(
+                asobi_player, Player, #{banned_at => calendar:universal_time()}, [banned_at]
+            ),
+            asobi_repo:update(CS);
+        {error, not_found} ->
+            {error, not_found}
+    end.
+
+-spec do_unban(binary()) -> {ok, map()} | {error, not_found}.
+do_unban(PlayerId) ->
+    case asobi_repo:get(asobi_player, PlayerId) of
+        {ok, Player} ->
+            CS = kura_changeset:cast(asobi_player, Player, #{banned_at => undefined}, [banned_at]),
+            asobi_repo:update(CS);
+        {error, not_found} ->
+            {error, not_found}
+    end.
+
+-spec do_grant(binary(), binary(), integer()) -> {ok, map()} | {error, term()}.
+do_grant(PlayerId, Currency, Amount) ->
+    asobi_economy:grant(PlayerId, Currency, Amount, #{reason => ~"admin_grant"}).

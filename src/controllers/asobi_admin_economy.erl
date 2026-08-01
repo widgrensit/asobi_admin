@@ -1,6 +1,9 @@
 -module(asobi_admin_economy).
 
+-include_lib("kura/include/kura.hrl").
+
 -export([index/1, items/1, create_item/1, listings/1, create_listing/1]).
+-export([do_create_item/1, do_create_listing/1]).
 
 -spec index(cowboy_req:req()) -> {json, map()}.
 index(_Req) ->
@@ -26,6 +29,15 @@ items(#{qs := Qs} = _Req) ->
 
 -spec create_item(cowboy_req:req()) -> {json, map()} | {json, integer(), map(), map()}.
 create_item(#{json := Params} = _Req) ->
+    case do_create_item(Params) of
+        {ok, Item} ->
+            {json, Item};
+        {error, CS1} ->
+            {json, 422, #{}, #{errors => kura_changeset:traverse_errors(CS1, fun(_F, M) -> M end)}}
+    end.
+
+-spec do_create_item(map()) -> {ok, map()} | {error, #kura_changeset{}}.
+do_create_item(Params) ->
     CS = asobi_item_def:changeset(#{}, #{
         slug => maps:get(~"slug", Params),
         name => maps:get(~"name", Params),
@@ -34,12 +46,7 @@ create_item(#{json := Params} = _Req) ->
         stackable => maps:get(~"stackable", Params, true),
         metadata => maps:get(~"metadata", Params, #{})
     }),
-    case asobi_repo:insert(CS) of
-        {ok, Item} ->
-            {json, Item};
-        {error, CS1} ->
-            {json, 422, #{}, #{errors => kura_changeset:traverse_errors(CS1, fun(_F, M) -> M end)}}
-    end.
+    asobi_repo:insert(CS).
 
 -spec listings(cowboy_req:req()) -> {json, map()}.
 listings(#{qs := Qs} = _Req) ->
@@ -51,6 +58,15 @@ listings(#{qs := Qs} = _Req) ->
 
 -spec create_listing(cowboy_req:req()) -> {json, map()} | {json, integer(), map(), map()}.
 create_listing(#{json := Params} = _Req) ->
+    case do_create_listing(Params) of
+        {ok, Listing} ->
+            {json, Listing};
+        {error, CS1} ->
+            {json, 422, #{}, #{errors => kura_changeset:traverse_errors(CS1, fun(_F, M) -> M end)}}
+    end.
+
+-spec do_create_listing(map()) -> {ok, map()} | {error, #kura_changeset{}}.
+do_create_listing(Params) ->
     CS = asobi_store_listing:changeset(#{}, #{
         item_def_id => maps:get(~"item_def_id", Params),
         currency => maps:get(~"currency", Params),
@@ -59,9 +75,4 @@ create_listing(#{json := Params} = _Req) ->
         valid_from => maps:get(~"valid_from", Params, undefined),
         valid_until => maps:get(~"valid_until", Params, undefined)
     }),
-    case asobi_repo:insert(CS) of
-        {ok, Listing} ->
-            {json, Listing};
-        {error, CS1} ->
-            {json, 422, #{}, #{errors => kura_changeset:traverse_errors(CS1, fun(_F, M) -> M end)}}
-    end.
+    asobi_repo:insert(CS).

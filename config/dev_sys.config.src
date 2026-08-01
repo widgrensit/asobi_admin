@@ -18,11 +18,18 @@
         }},
         {dev_mode, true},
         {bootstrap_application, asobi_admin},
-        {json_lib, json}
+        {json_lib, json},
+        %% asobi_admin never uses nova_session (the console UI's own
+        %% asobi_admin_session + HMAC-derived CSRF cover that); without this,
+        %% Nova sets its own `session_id` cookie on every response with no
+        %% HttpOnly/Secure/SameSite attributes and no purpose.
+        {use_sessions, false}
     ]},
     {asobi_admin, [
         {admin_token, <<"${ASOBI_ADMIN_TOKEN}">>},
-        {deployment_mode, <<"${ASOBI_ADMIN_DEPLOYMENT_MODE}">>}
+        {deployment_mode, <<"${ASOBI_ADMIN_DEPLOYMENT_MODE}">>},
+        {session_secret, <<"${ASOBI_ADMIN_SESSION_SECRET}">>},
+        {session_ttl_ms, 43_200_000}
     ]},
     {asobi, [
         {asobi_repo, #{

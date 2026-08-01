@@ -1,0 +1,220 @@
+:root {
+    color-scheme: dark;
+    --bg: #14171c;
+    --panel: #1c2028;
+    --border: #2a2f3a;
+    --text: #e6e8eb;
+    --muted: #8b93a1;
+    --accent: #4f8cff;
+    --danger: #e5484d;
+    --warn: #e5a94d;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.5 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+}
+
+.nav-brand {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.nav-links {
+    display: flex;
+    gap: 16px;
+    flex: 1;
+}
+
+.nav-links a {
+    color: var(--muted);
+    padding: 4px 0;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+    color: var(--text);
+}
+
+.main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+th {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #262b35;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn:hover {
+    border-color: var(--accent);
+}
+
+.btn-danger {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0;
+    font-size: 13px;
+}
+
+.btn-link:hover {
+    color: var(--text);
+}
+
+input,
+textarea,
+select {
+    background: #10131a;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
+.field {
+    margin-bottom: 12px;
+}
+
+.field label {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.banner {
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.banner-warn {
+    background: rgba(229, 169, 77, 0.12);
+    border: 1px solid var(--warn);
+    color: var(--warn);
+}
+
+.banner-error {
+    background: rgba(229, 72, 77, 0.12);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+}
+
+.pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    background: #262b35;
+    color: var(--muted);
+}
+
+.pill-banned {
+    background: rgba(229, 72, 77, 0.15);
+    color: var(--danger);
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.login-shell {
+    max-width: 360px;
+    margin: 12vh auto;
+    padding: 24px;
+}
+
+/* Layout utility classes - kept out of inline style="" attributes so the
+   Content-Security-Policy default-src 'self' (no style-src-attr override)
+   doesn't drop them. */
+.inline-form {
+    display: inline;
+}
+
+.inline-block-form {
+    display: inline-block;
+    margin-left: 12px;
+}
+
+.mt-12 {
+    margin-top: 12px;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.w-80 {
+    width: 80px;
+}
+
+.w-100 {
+    width: 100px;
+}

@@ -1,0 +1,48 @@
+{% extends "base.dtl" %}
+{% block title %}asobi_admin - Economy{% endblock %}
+{% block content %}
+<h1>Economy</h1>
+
+<div class="panel">
+  <h3>Item definitions</h3>
+  <table>
+    <thead><tr><th>Slug</th><th>Name</th><th>Category</th><th>Rarity</th></tr></thead>
+    <tbody>
+      {% for item in items %}
+      <tr><td>{{ item.slug }}</td><td>{{ item.name }}</td><td>{{ item.category }}</td><td>{{ item.rarity }}</td></tr>
+      {% empty %}
+      <tr><td colspan="4" class="muted">No items.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <form method="post" action="/admin/ui/economy/items" class="mt-12">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+    <input type="text" name="slug" placeholder="slug" />
+    <input type="text" name="name" placeholder="name" />
+    <input type="text" name="category" placeholder="category" />
+    <input type="text" name="rarity" placeholder="rarity (common)" />
+    <button type="submit" class="btn">Create item</button>
+  </form>
+</div>
+
+<div class="panel">
+  <h3>Store listings</h3>
+  <table>
+    <thead><tr><th>Item</th><th>Currency</th><th>Price</th><th>Active</th></tr></thead>
+    <tbody>
+      {% for listing in listings %}
+      <tr><td>{{ listing.item_def_id }}</td><td>{{ listing.currency }}</td><td>{{ listing.price }}</td><td>{{ listing.active }}</td></tr>
+      {% empty %}
+      <tr><td colspan="4" class="muted">No listings.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <form method="post" action="/admin/ui/economy/listings" class="mt-12">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+    <input type="text" name="item_def_id" placeholder="item id" />
+    <input type="text" name="currency" placeholder="currency" />
+    <input type="number" name="price" placeholder="price" />
+    <button type="submit" class="btn">Create listing</button>
+  </form>
+</div>
+{% endblock %}

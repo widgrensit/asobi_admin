@@ -1,0 +1,32 @@
+{% extends "base.dtl" %}
+{% block title %}asobi_admin - Players{% endblock %}
+{% block content %}
+<h1>Players</h1>
+
+<div class="panel">
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Username</th><th>Status</th><th>Joined</th></tr>
+    </thead>
+    <tbody>
+      {% for player in players %}
+      <tr>
+        <td><a href="/admin/ui/players/{{ player.id }}">{{ player.id }}</a></td>
+        <td>{{ player.username }}</td>
+        <td>
+          {% if player.banned_at %}<span class="pill pill-banned">banned</span>{% else %}<span class="pill">active</span>{% endif %}
+        </td>
+        <td class="muted">{{ player.inserted_at }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="muted">No players.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div>
+  {% if offset > 0 %}<a href="/admin/ui/players?limit={{ limit }}&offset={{ prev_offset }}" class="btn">Newer</a>{% endif %}
+  {% if players %}<a href="/admin/ui/players?limit={{ limit }}&offset={{ next_offset }}" class="btn">Older</a>{% endif %}
+</div>
+{% endblock %}

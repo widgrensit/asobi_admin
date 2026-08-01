@@ -1,0 +1,35 @@
+{% extends "base.dtl" %}
+{% block title %}asobi_admin - Tournaments{% endblock %}
+{% block content %}
+<h1>Tournaments</h1>
+
+<div class="panel">
+  <table>
+    <thead><tr><th>Name</th><th>Status</th><th>Start</th><th>End</th></tr></thead>
+    <tbody>
+      {% for t in tournaments %}
+      <tr>
+        <td><a href="/admin/ui/tournaments/{{ t.id }}">{{ t.name }}</a></td>
+        <td>{{ t.status }}</td>
+        <td class="muted">{{ t.start_at }}</td>
+        <td class="muted">{{ t.end_at }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="muted">No tournaments.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h3>Create tournament</h3>
+  <form method="post" action="/admin/ui/tournaments">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+    <div class="field"><label>Name</label><input type="text" name="name" /></div>
+    <div class="field"><label>Leaderboard ID</label><input type="text" name="leaderboard_id" /></div>
+    <div class="field"><label>Start at (ISO 8601)</label><input type="text" name="start_at" placeholder="2026-08-01T00:00:00Z" /></div>
+    <div class="field"><label>End at (ISO 8601)</label><input type="text" name="end_at" placeholder="2026-08-08T00:00:00Z" /></div>
+    <button type="submit" class="btn">Create</button>
+  </form>
+</div>
+{% endblock %}

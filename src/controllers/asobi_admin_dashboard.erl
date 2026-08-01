@@ -1,11 +1,15 @@
 -module(asobi_admin_dashboard).
 
--export([index/1]).
+-export([index/1, stats/0]).
 
 -spec index(cowboy_req:req()) -> {json, map()}.
 index(_Req) ->
+    {json, stats()}.
+
+-spec stats() -> map().
+stats() ->
     Memory = erlang:memory(),
-    {json, #{
+    #{
         status => ~"ok",
         online_players => asobi_presence:online_count(),
         %% online_players is in-memory node state; false here means the
@@ -26,4 +30,4 @@ index(_Req) ->
         run_queue => erlang:statistics(run_queue),
         otp_release => list_to_binary(erlang:system_info(otp_release)),
         erts_version => list_to_binary(erlang:system_info(version))
-    }}.
+    }.

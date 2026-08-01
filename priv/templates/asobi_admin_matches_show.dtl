@@ -1,0 +1,15 @@
+{% extends "base.dtl" %}
+{% block title %}asobi_admin - Match {{ match.id }}{% endblock %}
+{% block content %}
+<p><a href="/admin/ui/matches">&larr; Matches</a></p>
+<h1>Match {{ match.id }}</h1>
+
+<div class="panel">
+  <table>
+    <tr><th>Mode</th><td>{{ match.mode }}</td></tr>
+    <tr><th>Status</th><td>{{ match.status }}</td></tr>
+    <tr><th>Started</th><td>{{ match.inserted_at }}</td></tr>
+    <tr><th>Updated</th><td>{{ match.updated_at }}</td></tr>
+  </table>
+</div>
+{% endblock %}

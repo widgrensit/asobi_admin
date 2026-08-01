@@ -1,0 +1,26 @@
+{% extends "base.dtl" %}
+{% block title %}asobi_admin - Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+{% if not stats.live_plane_authoritative %}
+<div class="banner banner-warn">
+  Running in <strong>{{ stats.deployment_mode }}</strong> mode: online-player count and system
+  figures below describe this console's own node, not the game backend. Run asobi_admin in the
+  same release as your backend for authoritative live-plane data.
+</div>
+{% endif %}
+
+<div class="panel">
+  <table>
+    <tr><th>Node</th><td>{{ stats.node }}</td></tr>
+    <tr><th>Deployment mode</th><td>{{ stats.deployment_mode }}</td></tr>
+    <tr><th>Online players</th><td>{{ stats.online_players }}</td></tr>
+    <tr><th>Process count</th><td>{{ stats.process_count }}</td></tr>
+    <tr><th>Scheduler count</th><td>{{ stats.scheduler_count }}</td></tr>
+    <tr><th>Uptime (ms)</th><td>{{ stats.uptime_ms }}</td></tr>
+    <tr><th>OTP release</th><td>{{ stats.otp_release }} ({{ stats.erts_version }})</td></tr>
+    <tr><th>Memory total</th><td>{{ stats.memory.total }}</td></tr>
+  </table>
+</div>
+{% endblock %}
