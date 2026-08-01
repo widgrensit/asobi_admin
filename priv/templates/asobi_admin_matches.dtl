@@ -1,0 +1,31 @@
+{% extends "base.dtl" %}
+{% block title %}asobi_admin - Matches{% endblock %}
+{% block content %}
+<h1>Matches</h1>
+
+<form method="get" action="/admin/ui/matches" class="panel">
+  <div class="field">
+    <label for="status">Status</label>
+    <input type="text" id="status" name="status" value="{{ status_filter }}" placeholder="e.g. finished" />
+  </div>
+  <button type="submit" class="btn">Filter</button>
+</form>
+
+<div class="panel">
+  <table>
+    <thead><tr><th>ID</th><th>Mode</th><th>Status</th><th>Started</th></tr></thead>
+    <tbody>
+      {% for m in matches %}
+      <tr>
+        <td><a href="/admin/ui/matches/{{ m.id }}">{{ m.id }}</a></td>
+        <td>{{ m.mode }}</td>
+        <td>{{ m.status }}</td>
+        <td class="muted">{{ m.inserted_at }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="muted">No matches.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

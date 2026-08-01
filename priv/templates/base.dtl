@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}asobi_admin{% endblock %}</title>
+    <link rel="stylesheet" href="/admin/ui/assets/css/console.css" />
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <nav class="nav">
+      <a href="/admin/ui/dashboard" class="nav-brand">asobi_admin</a>
+      <div class="nav-links">
+        <a href="/admin/ui/dashboard" class="{% if active_page == "dashboard" %}active{% endif %}">Dashboard</a>
+        <a href="/admin/ui/players" class="{% if active_page == "players" %}active{% endif %}">Players</a>
+        <a href="/admin/ui/matches" class="{% if active_page == "matches" %}active{% endif %}">Matches</a>
+        <a href="/admin/ui/matchmaker" class="{% if active_page == "matchmaker" %}active{% endif %}">Matchmaker</a>
+        <a href="/admin/ui/leaderboards" class="{% if active_page == "leaderboards" %}active{% endif %}">Leaderboards</a>
+        <a href="/admin/ui/economy" class="{% if active_page == "economy" %}active{% endif %}">Economy</a>
+        <a href="/admin/ui/tournaments" class="{% if active_page == "tournaments" %}active{% endif %}">Tournaments</a>
+        <a href="/admin/ui/chat" class="{% if active_page == "chat" %}active{% endif %}">Chat</a>
+        <a href="/admin/ui/notifications" class="{% if active_page == "notifications" %}active{% endif %}">Notifications</a>
+        <a href="/admin/ui/system" class="{% if active_page == "system" %}active{% endif %}">System</a>
+      </div>
+      <div class="nav-user">
+        <form method="post" action="/admin/ui/logout" class="inline-form">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+          <button type="submit" class="btn-link">Logout</button>
+        </form>
+      </div>
+    </nav>
+    <main class="main">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

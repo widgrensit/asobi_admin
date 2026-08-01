@@ -1,6 +1,7 @@
 -module(asobi_admin_notifications).
 
 -export([broadcast/1]).
+-export([do_broadcast/4]).
 
 -spec broadcast(cowboy_req:req()) -> {json, map()}.
 broadcast(#{json := Params} = _Req) ->
@@ -8,6 +9,10 @@ broadcast(#{json := Params} = _Req) ->
     Subject = maps:get(~"subject", Params),
     Content = maps:get(~"content", Params, #{}),
     PlayerIds = maps:get(~"player_ids", Params, []),
+    {json, #{sent_to => do_broadcast(Type, Subject, Content, PlayerIds)}}.
+
+-spec do_broadcast(binary(), binary(), map(), [binary()]) -> [binary()].
+do_broadcast(Type, Subject, Content, PlayerIds) ->
     Sent = lists:map(
         fun(PlayerId) ->
             CS = kura_changeset:cast(
@@ -32,4 +37,4 @@ broadcast(#{json := Params} = _Req) ->
         end,
         PlayerIds
     ),
-    {json, #{sent_to => lists:filter(fun(X) -> X =/= undefined end, Sent)}}.
+    lists:filter(fun(X) -> X =/= undefined end, Sent).

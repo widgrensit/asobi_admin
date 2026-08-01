@@ -1,0 +1,27 @@
+{% extends "base.dtl" %}
+{% block title %}asobi_admin - Leaderboards{% endblock %}
+{% block content %}
+<h1>Leaderboards</h1>
+
+<div class="panel">
+  <form method="get" action="/admin/ui/leaderboards">
+    <div class="field"><label>Leaderboard ID</label><input type="text" name="id" value="{{ leaderboard_id }}" /></div>
+    <button type="submit" class="btn">Look up</button>
+  </form>
+</div>
+
+{% if leaderboard_id %}
+<div class="panel">
+  <table>
+    <thead><tr><th>Rank</th><th>Player</th><th>Score</th></tr></thead>
+    <tbody>
+      {% for e in entries %}
+      <tr><td>{{ e.rank }}</td><td>{{ e.player_id }}</td><td>{{ e.score }}</td></tr>
+      {% empty %}
+      <tr><td colspan="3" class="muted">No entries.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.dtl" %}
+{% block title %}asobi_admin - {{ tournament.name }}{% endblock %}
+{% block content %}
+<p><a href="/admin/ui/tournaments">&larr; Tournaments</a></p>
+<h1>{{ tournament.name }}</h1>
+
+<div class="panel">
+  <table>
+    <tr><th>Status</th><td>{{ tournament.status }}</td></tr>
+    <tr><th>Leaderboard</th><td>{{ tournament.leaderboard_id }}</td></tr>
+    <tr><th>Start</th><td>{{ tournament.start_at }}</td></tr>
+    <tr><th>End</th><td>{{ tournament.end_at }}</td></tr>
+    <tr><th>Max entries</th><td>{{ tournament.max_entries }}</td></tr>
+  </table>
+</div>
+{% endblock %}

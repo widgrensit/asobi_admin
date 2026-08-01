@@ -1,0 +1,22 @@
+{% extends "base.dtl" %}
+{% block title %}asobi_admin - Notifications{% endblock %}
+{% block content %}
+<h1>Broadcast notification</h1>
+
+{% if sent_count %}
+<div class="banner banner-warn">Sent to {{ sent_count }} player(s).</div>
+{% endif %}
+
+<div class="panel">
+  <form method="post" action="/admin/ui/notifications/broadcast">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+    <div class="field"><label>Type</label><input type="text" name="type" value="system" /></div>
+    <div class="field"><label>Subject</label><input type="text" name="subject" class="w-full" /></div>
+    <div class="field">
+      <label>Player IDs (comma or newline separated)</label>
+      <textarea name="player_ids" rows="4" class="w-full"></textarea>
+    </div>
+    <button type="submit" class="btn">Send</button>
+  </form>
+</div>
+{% endblock %}

@@ -7,8 +7,8 @@ watch live system stats.
 
 It is a [Nova](https://github.com/novaframework/nova) app that depends on the
 `asobi` library, talks to the same Postgres database as your game backend, and
-exposes a JSON API under `/admin/api/*` plus a live-stats websocket at
-`/admin/live/dashboard`.
+exposes a JSON API under `/admin/api/*`, a browser console UI under
+`/admin/ui/*`, plus a live-stats websocket at `/admin/live/dashboard`.
 
 ## Deployment model (read this first)
 
@@ -59,22 +59,34 @@ asobi_admin serves on its own Nova listener; point it at the same
 
 | Setting | Env var | Purpose |
 |---|---|---|
-| `asobi_admin.admin_token` | `ASOBI_ADMIN_TOKEN` | Bearer token required on every request. **No default - unset means every request is denied.** |
+| `asobi_admin.admin_token` | `ASOBI_ADMIN_TOKEN` | Shared secret for the bearer API and the console UI's login form. **No default - unset means every request is denied.** |
+| `asobi_admin.session_secret` | `ASOBI_ADMIN_SESSION_SECRET` | HMAC key for the console UI's CSRF tokens. **No default - unset means every state-changing UI action is rejected.** Only needed if you run the console UI, not the bearer API alone. |
+| `asobi_admin.session_ttl_ms` | - | Console UI session lifetime in milliseconds. Defaults to 12 hours. |
+| `asobi_admin.session_cookie_secure` | - | Set to `false` only for local plain-HTTP development. Unset, the session cookie is `Secure` whenever the request itself arrives over HTTPS or with `x-forwarded-proto: https` (so it works correctly behind a TLS-terminating proxy without extra config). |
 | distribution cookie | `RELEASE_COOKIE` | Erlang distribution cookie. Never commit it. |
 
 The admin API is unauthenticated-by-nothing: it is protected by a single
 bearer token, compared in constant time, and **fails closed** - if
 `ASOBI_ADMIN_TOKEN` is unset (or left as an unexpanded `${...}` placeholder)
-the console denies everything rather than opening up. Set a long random value:
+the console denies everything rather than opening up. `ASOBI_ADMIN_SESSION_SECRET`
+fails closed the same way. Set long random values:
 
 ```sh
 export ASOBI_ADMIN_TOKEN="$(head -c 32 /dev/urandom | base64)"
+export ASOBI_ADMIN_SESSION_SECRET="$(head -c 32 /dev/urandom | base64)"
 export RELEASE_COOKIE="$(head -c 32 /dev/urandom | base64)"
 ```
 
-Because the console can ban players and grant currency, treat both like
+Because the console can ban players and grant currency, treat all three like
 database credentials: keep them in your secret store, put the console on a
-private network, and never expose `/admin` to the public internet.
+private network, and never expose `/admin` to the public internet - that
+includes `/admin/ui`, which is a browser login form, not a public product.
+
+Rotating `ASOBI_ADMIN_TOKEN` is the documented response to a leaked token.
+**Rotate the env var and restart the node** - `ASOBI_ADMIN_TOKEN` is read from
+`sys.config` at boot, so changing the env var alone changes nothing until the
+node restarts and re-reads it. Once it does, every live console UI session is
+invalidated immediately along with it, not just future logins.
 
 ## Authentication
 
@@ -94,6 +106,18 @@ The live-stats websocket authenticates in-protocol (browsers cannot set
 
 within 5 seconds. Stats stream only after the token is accepted; an
 unauthenticated socket is closed with code 1008.
+
+## Console UI
+
+`/admin/ui/login` is a browser login form: enter `ASOBI_ADMIN_TOKEN` once and
+the console issues an `admin_session` cookie (HttpOnly, `SameSite=Lax`,
+`Secure` per the config above), scoped to `/admin/ui/*` only - it grants no
+access to `/admin/api/*`, which stays bearer-token-only. The UI covers the
+same areas as the JSON API (dashboard, players, matches, matchmaker,
+leaderboards, economy, tournaments, chat, notifications, system) and shows a
+banner on any live-plane page when running in `standalone` deployment mode,
+since those figures aren't authoritative there (see "Deployment model"
+above). Login attempts are rate-limited per source IP.
 
 ## API
 
@@ -118,11 +142,8 @@ Live stats: websocket `GET /admin/live/dashboard`.
 ```sh
 rebar3 compile
 rebar3 eunit
-rebar3 shell   # uses config/dev_sys.config.src; set ASOBI_ADMIN_TOKEN first
+rebar3 shell   # uses config/dev_sys.config.src; set ASOBI_ADMIN_TOKEN and ASOBI_ADMIN_SESSION_SECRET first
 ```
-
-There is no web UI yet - asobi_admin is an API today, consumed by the asobi
-control plane and by your own tooling. A bundled UI is a possible follow-up.
 
 ## License
 

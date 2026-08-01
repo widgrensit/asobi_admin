@@ -1,11 +1,15 @@
 -module(asobi_admin_system).
 
--export([index/1, nodes/1]).
+-export([index/1, nodes/1, stats/0]).
 
 -spec index(cowboy_req:req()) -> {json, map()}.
 index(_Req) ->
+    {json, stats()}.
+
+-spec stats() -> map().
+stats() ->
     Memory = erlang:memory(),
-    {json, #{
+    #{
         node => atom_to_binary(node()),
         otp_release => list_to_binary(erlang:system_info(otp_release)),
         erts_version => list_to_binary(erlang:system_info(version)),
@@ -35,7 +39,7 @@ index(_Req) ->
         deployment_mode => atom_to_binary(asobi_admin_runtime:mode()),
         live_plane_authoritative => asobi_admin_runtime:live_plane_authoritative(),
         applications => [atom_to_binary(App) || {App, _, _} <- application:which_applications()]
-    }}.
+    }.
 
 -spec nodes(cowboy_req:req()) -> {json, map()}.
 nodes(_Req) ->

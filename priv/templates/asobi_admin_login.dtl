@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>asobi_admin - Login</title>
+    <link rel="stylesheet" href="/admin/ui/assets/css/console.css" />
+  </head>
+  <body>
+    <div class="login-shell panel">
+      <h1>asobi_admin</h1>
+      {% if error %}
+      <div class="banner banner-error">Invalid admin token.</div>
+      {% endif %}
+      <form method="post" action="/admin/ui/login">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+        <input type="hidden" name="return_to" value="{{ return_to }}" />
+        <div class="field">
+          <label for="admin_token">Admin token</label>
+          <input type="password" id="admin_token" name="admin_token" autofocus autocomplete="off" class="w-full" />
+        </div>
+        <button type="submit" class="btn">Sign in</button>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+{% extends "base.dtl" %}
+{% block title %}asobi_admin - Matchmaker{% endblock %}
+{% block content %}
+<h1>Matchmaker</h1>
+
+{% if not live_plane_authoritative %}
+<div class="banner banner-warn">
+  Running in <strong>{{ deployment_mode }}</strong> mode: this page cannot show real queue state
+  from here. Run asobi_admin in the same release as your backend for live matchmaker inspection.
+</div>
+{% endif %}
+
+<div class="panel">
+  <p class="muted">Matchmaker queue inspection is not yet implemented on the backend API
+  (<code>asobi_admin_matchmaker:index/1</code> is a placeholder). This page will populate once
+  that endpoint returns real queue state.</p>
+</div>
+{% endblock %}

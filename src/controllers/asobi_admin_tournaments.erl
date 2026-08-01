@@ -1,6 +1,9 @@
 -module(asobi_admin_tournaments).
 
+-include_lib("kura/include/kura.hrl").
+
 -export([index/1, show/1, create/1]).
+-export([do_create/1]).
 
 -spec index(cowboy_req:req()) -> {json, map()}.
 index(#{qs := Qs} = _Req) ->
@@ -32,6 +35,15 @@ show(#{bindings := #{~"id" := TournamentId}} = _Req) ->
 
 -spec create(cowboy_req:req()) -> {json, map()} | {json, integer(), map(), map()}.
 create(#{json := Params} = _Req) ->
+    case do_create(Params) of
+        {ok, Tournament} ->
+            {json, Tournament};
+        {error, CS1} ->
+            {json, 422, #{}, #{errors => kura_changeset:traverse_errors(CS1, fun(_F, M) -> M end)}}
+    end.
+
+-spec do_create(map()) -> {ok, map()} | {error, #kura_changeset{}}.
+do_create(Params) ->
     CS = asobi_tournament:changeset(#{}, #{
         name => maps:get(~"name", Params),
         leaderboard_id => maps:get(~"leaderboard_id", Params),
@@ -44,7 +56,7 @@ create(#{json := Params} = _Req) ->
     case asobi_repo:insert(CS) of
         {ok, Tournament} ->
             _ = asobi_tournament_sup:start_tournament(Tournament),
-            {json, Tournament};
+            {ok, Tournament};
         {error, CS1} ->
-            {json, 422, #{}, #{errors => kura_changeset:traverse_errors(CS1, fun(_F, M) -> M end)}}
+            {error, CS1}
     end.
