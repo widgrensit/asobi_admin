@@ -1,5 +1,24 @@
 # asobi_admin
 
+> [!IMPORTANT]
+> **This repository is archived. The operator console ships inside
+> [`widgrensit/asobi`](https://github.com/widgrensit/asobi) now.**
+>
+> asobi serves its own console at `/console` and an ops API at
+> `/api/v1/ops`, with bearer-token or session auth and capability classes
+> (`read`, `player_data`, `config`). Turn it on with `{console, true}`.
+>
+> Everything this repo did is there: players, matches, matchmaker, economy,
+> leaderboards, tournaments, chat, notifications, and live runtime stats on
+> the overview. One dependency instead of a separate Nova app, and no second
+> deployment to run or secure.
+>
+> The one thing that did not move is this repo's WebSocket-pushed dashboard.
+> The console polls `/api/v1/ops/stats` every two seconds instead - the ops
+> plane already has auth, and a second in-protocol auth path was not worth
+> carrying for a payload this size.
+
+
 A game-operations console for a self-hosted [asobi](https://github.com/widgrensit/asobi)
 backend: search and moderate players, inspect matches and the matchmaker,
 manage the economy and tournaments, read chat, broadcast notifications, and
